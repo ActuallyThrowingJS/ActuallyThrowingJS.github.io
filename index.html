@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atomic Boolean — Reliable webhook delivery for your product</title>
+<meta name="description" content="Atomic Boolean delivers, retries, and replays your product's events. Signed payloads, exponential backoff, dead-letter queues, and per-endpoint delivery logs.">
+<link rel="canonical" href="https://atomicboolean.me/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Atomic Boolean">
+<meta property="og:title" content="Atomic Boolean — Reliable webhook delivery for your product">
+<meta property="og:description" content="Signed payloads, automatic retries, replay, and per-endpoint delivery logs.">
+<meta property="og:url" content="https://atomicboolean.me/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0D10">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0D10'/%3E%3Cpath d='M9 21l5-9 4 6 5-9' stroke='%236EE7B7' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Atomic Boolean",
+  "url": "https://atomicboolean.me/",
+  "email": "founder@atomicboolean.me",
+  "description": "Webhook delivery infrastructure for software products.",
+  "foundingDate": "2026"
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/" aria-label="Atomic Boolean home">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="#14181D"/>
+        <path d="M9 21l5-9 4 6 5-9" stroke="#6EE7B7" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Atomic Boolean</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#product">Product</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#start">Start free</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Webhook infrastructure</p>
+        <h1>Webhooks that don't get lost.</h1>
+        <p class="lede">
+          Atomic Boolean delivers your product's events to customer endpoints, retries the ones that
+          fail, and gives you a log of every attempt. Signed payloads, exponential backoff,
+          dead-letter queue, one-click replay.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#start">Start free</a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+        <p class="fineprint">Free tier: 10,000 events per month. No card required.</p>
+      </div>
+
+      <div class="hero-code" aria-label="Example API call">
+        <div class="code-head">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code-title">send an event</span>
+        </div>
+<pre><code><span class="c"># one HTTP call, signed and queued</span>
+curl https://api.atomicboolean.me/v1/events \
+  -H <span class="s">"Authorization: Bearer $RELAY_KEY"</span> \
+  -d <span class="s">'{
+    "type": "invoice.paid",
+    "endpoint": "cus_8f21",
+    "data": { "amount": 4200, "currency": "usd" }
+  }'</span>
+
+<span class="c"># → 202 Accepted</span>
+<span class="c"># → delivery id: evt_01JQ8K2M7X</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip">
+    <div class="wrap strip-inner">
+      <span>Built for teams shipping to customers who depend on the events</span>
+    </div>
+  </section>
+
+  <section id="product" class="section">
+    <div class="wrap">
+      <h2>The part of webhooks everyone rewrites</h2>
+      <p class="section-lede">
+        Every product eventually needs to tell another system that something happened. The first
+        version is a fire-and-forget POST. The second version is a queue, a retry table, a
+        signature scheme, and a support ticket every time a customer says they missed an event.
+      </p>
+
+      <div class="cards">
+        <article class="card">
+          <h3>Signed by default</h3>
+          <p>Every request carries an HMAC-SHA256 signature over the raw body and timestamp. Receivers verify with a shared secret, replay windows close in five minutes.</p>
+        </article>
+        <article class="card">
+          <h3>Retries that back off</h3>
+          <p>Failures retry on a 10s → 30s → 2m → 10m → 1h → 6h schedule. Jitter is applied per endpoint so a single outage doesn't produce a thundering herd when it recovers.</p>
+        </article>
+        <article class="card">
+          <h3>Dead letters, not silence</h3>
+          <p>After the last attempt an event lands in a dead-letter queue instead of disappearing. Inspect the response body, fix the receiver, replay the range.</p>
+        </article>
+        <article class="card">
+          <h3>Per-endpoint visibility</h3>
+          <p>Success rate, p95 latency, and last error per customer endpoint. When someone opens a ticket, you have the answer before you reply.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="section section-alt">
+    <div class="wrap">
+      <h2>Three steps to first delivery</h2>
+      <ol class="steps">
+        <li>
+          <span class="step-num">01</span>
+          <h3>Create an endpoint</h3>
+          <p>Point Atomic Boolean at a URL you control. It generates a signing secret and sends a test event so you can confirm the handshake before anything goes live.</p>
+        </li>
+        <li>
+          <span class="step-num">02</span>
+          <h3>Send events</h3>
+          <p>One POST from your backend, or the SDK for Node, Python, and Go. The call returns as soon as the event is durably queued — no waiting on the customer's server.</p>
+        </li>
+        <li>
+          <span class="step-num">03</span>
+          <h3>Watch, or don't</h3>
+          <p>Retries run on their own. The dashboard shows every attempt with status code, latency, and response body. Replay any window with one click.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="pricing" class="section">
+    <div class="wrap">
+      <h2>Pricing</h2>
+      <p class="section-lede">Priced per delivered event. Failed attempts and retries are not billed.</p>
+
+      <div class="pricing">
+        <article class="price-card">
+          <h3>Free</h3>
+          <p class="price"><span>$0</span> / month</p>
+          <ul>
+            <li>10,000 events per month</li>
+            <li>3 endpoints</li>
+            <li>7-day event log</li>
+            <li>Community support</li>
+          </ul>
+          <a class="btn btn-ghost btn-block" href="#start">Start free</a>
+        </article>
+
+        <article class="price-card featured">
+          <h3>Starter</h3>
+          <p class="price"><span>$29</span> / month</p>
+          <ul>
+            <li>250,000 events per month</li>
+            <li>25 endpoints</li>
+            <li>30-day event log</li>
+            <li>Replay and dead-letter queue</li>
+            <li>Email support, 1 business day</li>
+          </ul>
+          <a class="btn btn-primary btn-block" href="#start">Start 14-day trial</a>
+        </article>
+
+        <article class="price-card">
+          <h3>Scale</h3>
+          <p class="price"><span>$99</span> / month</p>
+          <ul>
+            <li>2,000,000 events per month</li>
+            <li>Unlimited endpoints</li>
+            <li>90-day event log</li>
+            <li>Custom retry policy</li>
+            <li>Priority support</li>
+          </ul>
+          <a class="btn btn-ghost btn-block" href="#start">Talk to us</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="section section-alt">
+    <div class="wrap narrow">
+      <h2>Questions</h2>
+
+      <details>
+        <summary>What happens if a customer's endpoint is down for hours?</summary>
+        <p>Retries continue through the full backoff schedule — roughly 9 hours of attempts. Events that exhaust the schedule move to the dead-letter queue, where they stay until you replay or discard them.</p>
+      </details>
+
+      <details>
+        <summary>Can I control the retry schedule?</summary>
+        <p>Yes, on the Scale plan. The default schedule suits most receivers; custom schedules matter when a customer runs batch processing and only accepts traffic overnight.</p>
+      </details>
+
+      <details>
+        <summary>How are payloads signed?</summary>
+        <p>HMAC-SHA256 over <code>timestamp + "." + raw_body</code>, sent in a header alongside the timestamp. Verify the timestamp is within five minutes to reject replays. Secrets rotate without downtime — the old and new secret both verify during a 24-hour overlap.</p>
+      </details>
+
+      <details>
+        <summary>Where is data stored?</summary>
+        <p>Event payloads and delivery logs are stored in the EU (Frankfurt) or US (Virginia), chosen per project at creation. Payloads are encrypted at rest and purged at the end of your plan's retention window.</p>
+      </details>
+    </div>
+  </section>
+
+  <section id="start" class="section cta-final">
+    <div class="wrap narrow center">
+      <h2>Ship the events, skip the queue table</h2>
+      <p class="section-lede">Create a project and send your first event in about four minutes.</p>
+      <a class="btn btn-primary" href="mailto:founder@atomicboolean.me?subject=Atomic Boolean%20access">Request access</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Team</h2>
+      <!-- EDIT: replace name, role, bio and LinkedIn with your real details.
+           Reviewers cross-check this against your LinkedIn profile. -->
+      <div class="team">
+        <article class="person">
+          <div class="avatar" aria-hidden="true">YN</div>
+          <h3>Your Name</h3>
+          <p class="role">Founder</p>
+          <p>Builds the delivery pipeline. Previously backend infrastructure.</p>
+          <a href="https://www.linkedin.com/in/your-handle/">LinkedIn</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <p class="brand-line">Atomic Boolean</p>
+      <p class="muted">Webhook delivery infrastructure.</p>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:founder@atomicboolean.me">founder@atomicboolean.me</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+    <p class="muted small">© 2026 Atomic Boolean. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
